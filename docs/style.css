@@ -1,0 +1,284 @@
+/* Reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h3,h4,
+h5,pre,form,fieldset,input,p,blockquote,table,
+th,td { margin:0; padding:0; }
+fieldset,img,abbr { border:0; }
+address,caption,cite,code,dfn,h1,h2,h3,
+h3,h4,h5,th,var { font-style:normal; font-weight:normal; }
+caption,th { text-align:left; }
+q:before,q:after { content:''; }
+a { text-decoration:none; }
+/* General */
+html, body {
+height:100%;
+}
+body {
+background:#111;
+font-family:"Lucida Grande",Verdana,"Bitstream Vera Sans",Arial,sans-serif;
+line-height:1.4em;
+color:#333;
+margin:0;
+padding:0;
+min-height:400px; /* For Mozilla/Opera/Safari */
+}
+h1 {
+font:bold 1.3em Georgia,"Times New Roman",serif;
+letter-spacing:.2em;
+color:#c00;
+margin:20px 16px 20px;
+padding:0 20px 5px;
+border-bottom:1px solid #666;
+}
+h2 {
+font:bold 1em Georgia,"Times New Roman",serif;
+letter-spacing:.2em;
+color:#c00;
+margin:40px 16px 20px;
+padding:0 20px 5px;
+border-bottom:1px solid #666;
+}
+h3 {
+font:bold 0.9em Georgia,"Times New Roman",serif;
+letter-spacing:.2em;
+color:#333;
+margin:40px 16px 20px;
+padding:0 20px 5px;
+border-bottom:1px dotted #666;
+}
+h4 {
+font:bold 1em Georgia,Serif;
+letter-spacing:.2em;
+}
+blockquote {
+color:#555;
+font-size:0.9em;
+margin:20px 60px;
+border-left:1px dotted #666;
+}
+/* Useful */
+.wrapper {
+width:900px;
+min-height:100%;
+margin:0 auto;
+}
+.clear { clear:both; }
+.center, .center a {
+width:auto;
+margin:20px auto;
+text-align:center;
+}
+.center .noborder { border:0; }
+/* Images */
+.center img { margin:4px; padding:4px; border:1px solid #999; }
+img.left { float:left; margin:10px; padding:4px; border:1px solid #999; }
+img.right { float:right; margin:10px; padding:4px; border:1px solid #999; }
+.group { width:700px; margin:0px auto; }
+.group-row { clear:both; }
+.group-item {
+margin:1em;
+display:inline-block;
+float:left;
+font-size:0.7em;
+line-height:1.1em;
+}
+.group img { margin:4px; padding:4px; border:1px solid #999; }
+.group .sub { width:300px; padding:0 9px; text-align:left; }
+.group .no-border img { border:0; }
+/* Link */
+a { color:#21759b; text-decoration:none; }
+a:visited {color:#21759b;}
+a:hover { color:#c93b0e; }
+p a, li a { border-bottom:1px dotted #dfdfdf; }
+p a:hover, li a:hover { border-bottom:1px solid #c93b0e; }
+/* Menu */
+#nav, #nav ul {
+float:left;
+margin:0;
+padding:0;
+list-style-type:none;
+position:relative;
+line-height:1.5em;
+}
+#nav li {
+float:left;
+position:relative;
+width:150px;
+font:bold 1em "Trebuchet MS", Arial, Helvetica, sans-serif;
+text-align:center;
+text-transform:uppercase;
+}
+#nav a {
+background-color:#464646;
+display:block;
+padding:5px;
+color:#ccc;
+text-decoration:none;
+border-top:1px solid #fff;
+border-bottom:1px solid #fff;
+border-left:1px solid #fff;
+}
+#nav a:hover {
+background-color:#fff;
+color:#21759b;
+}
+/* Columns */
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
+float:left;
+margin:0 14px;
+}
+.col-1 { width:52px; }
+.col-2 { width:132px; }
+.col-3 { width:212px; }
+.col-4 { width:292px; }
+.col-5 { width:372px; }
+.col-6 { width:452px; }
+.col-7 { width:532px; }
+.col-8 { width:612px; }
+.col-9 { width:692px; }
+.col-10 { width:772px; }
+.col-11 { width:852px; }
+.col-12 { width:932px; }
+/* Cpp */
+div.cpp { background-color:#f9f9f9; line-height:1em; width:700px; margin:0 auto; }
+.cpp span:link { color:#00b800 }
+.cpp span:visited { color:#666666 }
+.cpp span:active { color:#224fff }
+.cpp span:hover { color:#a900a9 }
+.cpp pre { color:#000000 }
+.cpp font { font-size:100% }
+.cpp .symbols { color:#0077dd }
+.cpp .preproc { color:#a900a9 }
+.cpp .integer { color:#ff0032 }
+.cpp .floatpt { color:#ff23a6 }
+.cpp .dblquot { color:#00b800 }
+.cpp .sinquot { color:#00b86b }
+.cpp .keyword { color:#224fff; font-weight:bold }
+.cpp .keytype { color:#ff9933; font-weight:bold }
+.cpp .comment { color:#666666; font-style:italic }
+/* Main */
+#content {
+background:transparent url('bg_cross.png');
+padding:20px 20px 25px;
+clear:both;
+}
+#content p {
+margin:20px 40px;
+font-size:0.8em;
+}
+#content ul, #content ol {
+font-size:0.8em;
+margin:10px 0 20px 80px;
+}
+#footer {
+background:#e7e7e7;
+width:900px;
+height:30px;
+margin:0;
+padding:8px 0px 0;
+font:.7em "Trebuchet MS",Trebuchet,Arial,Verdana,Sans-serif;
+color:#111;
+text-align:center;
+border-top:1px solid #21759b;
+}
+/* About Me */
+#content .category {
+margin:10px 30px 20px;
+padding:0;
+border-bottom:1px solid #ccc;
+clear:both;
+}
+#content .item {
+font-size:0.9em;
+margin:0 0 20px;
+padding:0 0 20px;
+border-bottom:1px solid #ccc;
+clear:both;
+}
+#content .item ul {
+margin:10px 0 20px 40px;
+}
+#content .item-list-l { width:60%; float:left; }
+#content .item-list-r { width:40%; float:left; font-style:italic; }
+#content .item-list-l ul, #content .item-list-r ul { list-style:none; margin:0 0 40px; }
+#content .item-list-l li, #content .item-list-r li { line-height:24px; border-bottom:1px solid #ccc; }
+#content .item-col { width:32%; float:left; }
+#content .item-col ul { list-style:none; margin:10px 0 0; }
+#content .item-col li { line-height:24px; border-bottom:1px solid #ccc; }
+#content .item p { margin:20px 0 0; padding:0; }
+#content #objective { font:0.95em Georgia,Serif; color:#666; line-height:1.4em; }
+#content .sub { margin:5px 0 0; font-size:0.9em; }
+#content .right { font-size:0.9em; float:right; }
+#content .title { font:italic 18px Georgia,Serif; clear:both }
+/* Gallery */
+#content .gallery-col { width:160px; float:left; margin:0; }
+#content .gallery-col h2 { margin:40px 16px 20px; padding:0 0 5px; text-align: center; }
+#content .gallery-col ul { margin:0 22px; padding:0; }
+#content .gallery-col li { margin:0; padding:0; }
+/*.gallery {
+margin:0px auto;
+}
+.gallery-item {
+float:left;
+width:360px;
+height:100px;
+margin:0;
+padding:10px 30px;
+display:block;
+vertical-align:top;
+line-height:1.2em;
+}
+.gallery-item a { color:#333; font-weight:normal; }
+.gallery-item:hover { background:#ccc; }
+.gallery-item img {	float:left;	}
+.gallery-text {
+width:230px;
+font-size:0.75em;
+float:left;
+text-align:left;
+margin:5px 15px;
+} */
+/* Contact Form Styling */
+/* http://freecss.info/css-tutorials/jquery-ajax-contact-form-in-facebox/ */
+#contactform #error ul{
+padding-left:0px;
+line-height:20px;
+}
+#contactform #error span{
+color:green;
+padding:5px 0 5px 0;
+position:absolute;
+top:60px;
+right:10px;
+width:150px;
+}
+#contactform #error ul li{
+color:#BF0B0B;
+font-weight:normal;
+}
+h2#contacth2{
+font-size:18px;
+color:#000;
+margin:0 0 10px 0;
+font-weight:normal;
+padding-bottom:10px;
+border-bottom:1px dotted #ccc;
+}
+#contactform fieldset{
+border:none;
+}
+#contactform #formleft{
+float:left;
+}
+#contactform #error{
+float:right;
+}
+#contactform .button{
+background:#ededed;
+color:#666;
+border:1px solid #ccc;
+padding:5px 20px 5px 20px;
+outline:none;
+}
+#contactform{
+color:#666;
+}

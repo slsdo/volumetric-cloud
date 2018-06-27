@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Volumetric Clouds | Future Data Lab</title>
+    
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="description" content="Volumetric Clouds" />
+    <meta name="keywords" content="Volumetric Clouds" />
+
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="js/lightbox/css/jquery.lightbox-0.5.css" media="screen" />
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lightbox/js/jquery.lightbox-0.5.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.group a').lightBox();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <ul id="nav">
+            <li><a href="../" style="border-left:0;">Home</a></li>
+            <li><a href="#intro">Intro</a></li>
+            <li><a href="#raymarch">Raymarch</a></li>
+            <li><a href="#render">Render</a></li>
+            <li><a href="#result">Results</a></li>
+            <li><a href="https://github.com/slsdo/VolumetricClouds">Code</a></li>
+        </ul>
+        
+        <div id="content">
+            <h1>Volumetric Clouds</h1>
+
+            <p id="intro"><em>A Volume Renderer that Utilizes Ray Casting and Ray Marching through a 3D Voxel Grid to Generate Puffy Clouds</em></p>
+
+            <p>Originally finished in 2009, this program first reads a text file containing initialization variables, then uses those variables to create a voxel grid data structure and uses ray marching to read lighting and density information from the grid in order to render fluffy clouds. The program was updated in 2010: the code was completely rewritten to improve efficiency, several new algorithms were implemented for voxel grid traversal, Perlin Noise was implemented to generate random clouds, and a GUI was created to make it more user-friendly (for the few users that actually stumble across it, that is).</p>
+
+            <h3>Features</h3>
+
+            <ul>
+                <li>Generates volumetric clouds with ray marching on a voxel density grid</li>
+                <li>Trilinear interpolation to produce more realistic results</li>
+                <li>Random cloud generator using Perlin noise</li>
+                <li>Can read in custom-made cloud configuration files or output current cloud as a new configuration file</li>
+                <li>GUI that allows the user to move the camera and see rendering progress</li>
+                <li>Optimized for faster speed</li>
+            </ul>
+
+            <h2>Voxel Grid</h2>
+
+            <p>A voxel grid is a <em>N</em>x<em>N</em>x<em>N</em> grid of voxels where each voxel stores properties such as density, color, and transmissivity. The voxel class can take any world-space coordinate and transform it into local voxel-space coordinate. Each voxel is stored in a vector array, and can be access through a function that translates x, y, z coordinates into array indices (<em>index = x + y*(number of x voxel) + z*(number of x voxel)*(number of y voxel)</em>). Arbitrary values are picked to break a tie in the case of a ray hitting the very edge between two voxels.</p>
+            
+            <p>The voxel grid class also includes a default density (0 in this case). The default density's main purpose is to provide a density value when given coordinates outside the grid, which can happen to voxels at the edge of the grid during trilinear interpolation.</p>
+
+            <h2 id="raymarch">Ray Marching</h2>
+
+            <p>Similar to raytracing, a ray has a beginning point <em>P</em> and a direction <em>V</em>. The ray marching algorithm was tested in a series of unit tests by moving along the ray in both discrete and uniform steps. While "marching" through voxels, the ray reads the voxel's properties such as density, which is then used in calculating lighting and density accumulation.</p>
+
+            <p>Several optimizations were made to the ray march algorithm. Instead of marching a ray from the viewport to the grid, the ray starts at the grid's edge. Also, the march will stop as soon as the ray finds itself outside the grid.</p>
+
+            <p>Different algorithms can be implemented to produce different (and sometimes better) results. The original ray march algorithm simply takes one step each iteration, where a step is the length of either one or half of a voxel:</p>
+
+<div class="cpp">
+<pre>
+<span title="line1"/>     <font class="comment">1:</font> <font class="comment">// Ray Marching</font></span>
+<span title="line2"/>     <font class="comment">2:</font> <font class="keyword">while</font> (ray is inside grid) {</span>
+<span title="line3"/>     <font class="comment">3:</font>     points.push_back(orig); <font class="comment">// Stores the point</font></span>
+<span title="line4"/>     <font class="comment">4:</font>     orig <font class="symbols">=</font> orig <font class="symbols">+</font> step*dir; <font class="comment">// Increment step</font></span>
+<span title="line5"/>     <font class="comment">5:</font> }</span>
+<span title="line6"/>     <font class="comment">6:</font> </span>
+</pre>
+</div>
+
+            <p>However, if the step size is too large, the ray may miss a voxel completely (and thus missing the rendering properties for that block), but decreasing the step size too much and rendering will slow to a crawl. One solution is to check for all voxels that the ray passes through by running a ray-cube intersection test on all voxels. Unfortunately the speed of this method is also not satisfactory. We can further improve performance by choosing which voxel to test for intersection (for a 3D grid, at each step there can only be 3 possible voxels that the ray intersects next). In the end, keep in mind that intersection test itself can be very slow, so if we have a large grid with many voxels, the number of intersection test alone will take up a lot of time.</p>
+
+            <p>Another solution is <a href="http://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html">Bresenham's line rasterization algorithm</a>. The algorithm can determine which points in an n-dimensional raster should be plotted in order to form a close approximation to a straight line between two given points. The algorithm is often used to draw lines on a computer screen, code for the 2D cases is fairly straightforward to implement, and can be easily extended to the 3rd dimension. However, Bresenham's algorithm is not adequate for our purpose, since the set of pixels that are detected does not include all pixels through which the line passes. In the image below, the ray passes through the red grid but it is overlooked.</p>
+
+            <div class="center"><img src="img/cloud_rayvoxel.png" title="Only the blue grids are detected." alt="cloud_rayvoxel" /></div>           
+
+            <p>So what to do? Amanatides and Woo to the rescue! In the paper <em><a href="http://www.cse.yorku.ca/~amana/research/grid.pdf">A Fast Voxel Traversal Algorithm for Ray Tracing</a></em>, Amanatides and Woo present a solution to this problem by finding the minimum of the x and y distance (and in our case z as well) where the ray crosses over the current voxel boundary. The paper even comes with pseudocode of the algorithm. There are also several good resources online that provide examples of the initialization part of the algorithm:</p>
+
+            <ul>
+                <li><a href="http://www.clockworkcoders.com/oglsl/rt/gpurt3.htm">www.clockworkcoders.com/oglsl/rt/gpurt3.htm</a> (Recommended)</li>
+                <li><a href="http://www.ray-tracing.ru/articles182.html">www.ray-tracing.ru/articles182.html</a></li>
+                <li><a href="http://www.mathworks.com/matlabcentral/fileexchange/26852">www.mathworks.com/matlabcentral/fileexchange/26852</a></li>
+                <li><a href="http://devmaster.net/posts/2836/raytracing-theory-implementation-part-1-introduction">devmaster.net/posts/2836/raytracing-theory-implementation-part-1-introduction</a></li>
+            </ul>
+
+            <p>Keep in mind that this algorithm can also be slow if you have too many voxels, since each and every voxel the ray passes through is processed. Using this method, the resulting clouds are generally darker than outputs from regular ray marching due to the fact no voxels are skipped, resulting in more opacity being accumulated during ray casting. Due to the fact that the algorithm stops at the edge of each voxel, when doing trilinear interpolation, all the weights end up being the same, giving less-than-ideal results:</p>
+
+            <div class="group">
+                <div class="group-row">
+                    <div class="group-item"><a href="img/cloud_lowres_step-step_interp.jpg"><img src="img/cloud_lowres_step-step_interps.png" title="Good." alt="cloud_lowres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_lowres_voxel-voxel_interp.jpg"><img src="img/cloud_lowres_voxel-voxel_interps.png" title="Bad." alt="cloud_lowres_voxel-voxel_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <p>The left image is produced using regular ray marching with trilinear interpolation, the right image is produced using voxel-by-voxel marching with trilinear interpolation.</p>
+
+            <h2>Illumination and Precomputing Transmittance</h2>
+
+            <p>Each step through the voxel grid involves an illuminance calculation <em>Q()</em>, which in turn involves another ray march through the voxel grid towards the light. This step simply finds the full transmittance from the point in question to the light, by casting from that point to the point of light. This ray march has the same step size as the other ray march.</p>
+
+            <p>Pre-computed transmittance is added to improve performance. Before rendering, a new voxel grid with the same size/shape as the density grid is created with the transmittance (<em>Q</em>) value calculated and stored in each cell. During rendering, the stored <em>Q</em> value is used rather than performing an extra ray march to gather illumination.</p>
+
+            <h2 id="render">Volumetric Rendering</h2>
+
+            <p>A ray is cast along the line of sight between the eye point (viewport) and each pixel to accumulate the opacity and color. The ray stops when transmittance becomes close to 0, or the ray leaves the grid. In the latter case, the resulting value is then blended with the background color to provide the color of that pixel. The full accumulation algorithm is as follows:</p>
+
+<div class="cpp">
+<pre>
+<span title="line1">     <font class="comment">1:</font> <font class="keyword">for</font> each point along the ray {</span>
+<span title="line2">     <font class="comment">2:</font>    color <font class="symbols">=</font> colorAtPoint*lightColor; <font class="comment">// Color</font></span>
+<span title="line3">     <font class="comment">3:</font>    deltaT <font class="symbols">=</font> exp(-kapa*stepSize*densityAtPoint); <font class="comment">// Kapa is a constant</font></span>
+<span title="line4">     <font class="comment">4:</font>    T *<font class="symbols">=</font> deltaT; <font class="comment">// Transmittance</font></span>
+<span title="line5">     <font class="comment">5:</font> </span>
+<span title="line6">     <font class="comment">6:</font>    <font class="comment">// When transmittance becomes close to zero we stop</font></span>
+<span title="line7">     <font class="comment">7:</font>    <font class="keyword">if</font> (T &lt; 1e<font class="symbols">-</font><font class="integer">6</font>)</span>
+<span title="line8">     <font class="comment">8:</font>        <font class="keyword">break</font>;</span>
+<span title="line9">     <font class="comment">9:</font> </span>
+<span title="line10">    <font class="comment">10:</font>   <font class="comment">// Rendering equation</font> </span>
+<span title="line11">    <font class="comment">11:</font>   color <font class="symbols">+=</font> (<font class="integer">1</font> <font class="symbols">-</font> deltaT)/kapa*color*T*precomputedTransmittance;</span>
+<span title="line12">    <font class="comment">12:</font> }</span>
+<span title="line13">    <font class="comment">13:</font></span>
+<span title="line14">    <font class="comment">14:</font> pixel <font class="symbols">=</font> color <font class="symbols">+</font> backgroundColor*T;</span>
+<span title="line15">    <font class="comment">15:</font> </span>
+</pre>
+</div>
+
+            <h2>Trilinear Interpolation</h2>
+
+            <p>Trilinear interpolation is used to improve the quality of the renderings. To get a better picture of how it works, look at the following two images from <a href="http://en.wikipedia.org/wiki/Trilinear_interpolation">Wikipedia</a>:</p>
+            
+            <div class="group">
+                <div class="group-row">
+                    <div class="group-item no-border"><img src="img/cloud_tri1.png" title="Given 8 points..." alt="cloud_tri1" /><div class="sub">Given 8 points...</div></div>
+                    <div class="group-item no-border"><img src="img/cloud_tri2.png" title="...we find c by interpolating those points" alt="cloud_tri2" /><div class="sub">...we find <em>c</em> by interpolating the original points in 3 steps.</div></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+
+            <p>In our case, we use it to express ray march position as a weighted sum of voxel positions (a bit different from the above method):</p>
+
+<div class="cpp">
+<pre>
+<span title="line1"/>     <font class="comment">1:</font> <font class="comment">// Tri-linear interpolation</font></span>
+<span title="line2"/>     <font class="comment">2:</font> <font class="keyword">for</font> (k <font class="symbols">=</font> z; k &lt;<font class="symbols">=</font> z + <font class="integer">1</font>; k++)</span>
+<span title="line3"/>     <font class="comment">3:</font>     <font class="keyword">for</font> (j <font class="symbols">=</font> y; j &lt;<font class="symbols">=</font> y + <font class="integer">1</font>; j++)</span>
+<span title="line4"/>     <font class="comment">4:</font>         <font class="keyword">for</font> (i <font class="symbols">=</font> x; i &lt;<font class="symbols">=</font> x + <font class="integer">1</font>; i++)</span>
+<span title="line5"/>     <font class="comment">5:</font>             weightx <font class="symbols">=</font> (voxelSize <font class="symbols">-</font> |x - i*voxelSize|)/voxelSize;</span>
+<span title="line6"/>     <font class="comment">6:</font>             weighty <font class="symbols">=</font> (voxelSize <font class="symbols">-</font> |y - j*voxelSize|)/voxelSize;</span>
+<span title="line7"/>     <font class="comment">7:</font>             weightz <font class="symbols">=</font> (voxelSize <font class="symbols">-</font> |z - k*voxelSize|)/voxelSize;</span>
+<span title="line8"/>     <font class="comment">8:</font> </span>
+<span title="line9"/>     <font class="comment">9:</font>             weight <font class="symbols">=</font> weightx*weighty*weightz;</span>
+<span title="line10"/>    <font class="comment">10:</font>             interpolatedDensity <font class="symbols">+=</font> weight*VoxelDensityAt(ii, jj, kk);</span>
+<span title="line11"/>    <font class="comment">11:</font> </span>
+</pre>
+</div>
+
+            <h2>Cloud Generator and Perlin Noise</h2>
+
+            <p>This generates voxel grids by filling a density grid with variables that produce good-looking clouds. Perlin noise is used to generate density values at each voxel with respect to a general spherical shape. Maximum size of the grid is also needed to ensure the generated cloud don't touch the boundary of the grid (or it will look like the cloud is cut off).</p>
+
+            <p>Below are several good references for Perlin noise and how to use it to create realistic-looking clouds:</p>
+
+            <ul>
+                <li><a href="http://freespace.virgin.net/hugo.elias/models/m_perlin.htm">http://freespace.virgin.net/hugo.elias/models/m_perlin.htm</a> (Recommended)</li>
+                <li><a href="http://freespace.virgin.net/hugo.elias/models/m_clouds.htm">http://freespace.virgin.net/hugo.elias/models/m_clouds.htm</a> (Especially on <em>CloudCover</em> and <em>CloudSharpness</em>)</li>
+                <li><a href="http://www.sepcot.com/blog/2006/08/PDN-PerlinNoise2d">http://www.sepcot.com/blog/2006/08/PDN-PerlinNoise2d</a></li>
+                <li><a href="http://www.flipcode.com/archives/Perlin_Noise_Class.shtml">http://www.flipcode.com/archives/Perlin_Noise_Class.shtml</a> (A Perlin noise class)</li>
+            </ul>
+
+            <h2 id="result">Results</h2>
+
+            <div class="group">
+                <div class="group-row">
+                    <div class="group-item"><a href="img/cloud_highres_step-step_interp.jpg"><img src="img/cloud_highres_step-step_interps.png" title="Normal-looking cloud." alt="cloud_highres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_step-voxel_get.jpg"><img src="img/cloud_highres_step-voxel_gets.png" title="Abstract and cartoony." alt="cloud_highres_step-voxel_get" /></a><div class="sub">Voxel ray marching without trilinear interpolation.</div></div>
+                </div>
+                <div class="group-row">
+                    <div class="group-item"><a href="img/cloud_highres_voxel-step_interp.jpg"><img src="img/cloud_highres_voxel-step_interps.png" title="Rain cloud?" alt="cloud_highres_voxel-step_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_voxel-voxel_get.jpg"><img src="img/cloud_highres_voxel-voxel_gets.png" title="Too dark..." alt="cloud_highres_voxel-voxel_get" /></a><div class="sub">Voxel ray marching for transmittance computation.</div></div>
+                </div>
+                <div class="group-row">
+                    <div class="group-item"><a href="img/cloud_random1.jpg"><img src="img/cloud_random1s.png" title="Randomly generated cloud." alt="cloud_random1" /></a></div>
+                    <div class="group-item"><a href="img/cloud_random2.jpg"><img src="img/cloud_random2s.png" title="Randomly generated cloud with color." alt="cloud_random2" /></a></div>
+                </div>
+                <div class="group-row">
+                    <div class="group-item"><a href="img/cloud_result1.jpg"><img src="img/cloud_result1s.png" title="Finaly result." alt="cloud_result1" /></a></div>
+                    <div class="group-item"><a href="img/cloud_result2.jpg"><img src="img/cloud_result2s.png" title="Better final result." alt="cloud_result2" /></a></div>
+                </div>
+            </div>
+
+            <h3>Download</h3>
+
+            <div class="center">[ <strong><a href="volumetricloud.zip">Volumetric Clouds v.1.0</a></strong> ]</div>
+            <div class="clear"></div>
+        </div>
+                        
+        <div id="footer">
+            <p>&copy; 2010 Future Data Lab</p>
+        </div>
+    </div>
+</body>
+</html>
