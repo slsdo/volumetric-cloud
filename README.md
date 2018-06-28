@@ -1,5 +1,5 @@
-Volumetric Clouds
-=================
+Volumetric Cloud
+================
 
 Originally created in 2009, this program first reads a text file containing initialization variables, then uses those variables to create a voxel grid data structure and uses ray marching to read lighting and density information from the grid in order to render fluffy clouds. The program was updated in 2010: the code was completely rewritten to improve efficiency, several new algorithms were implemented for voxel grid traversal, Perlin Noise was implemented to generate random clouds, and a GUI was created to make it more user-friendly (for the few users that actually stumble across it, that is).
 
