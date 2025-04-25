@@ -10,15 +10,10 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <link rel="stylesheet" type="text/css" href="js/lightbox/css/jquery.lightbox-0.5.css" media="screen" />
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="js/lightbox/js/jquery.lightbox-0.5.min.js"></script>
-    <script type="text/javascript">
-        $(function() {
-            $('.group a').lightBox();
-        });
-    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.5/dist/js/lightbox.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.5/dist/css/lightbox.min.css">
 </head>
 
 <body>
@@ -94,8 +89,8 @@
 
             <div class="group">
                 <div class="group-row">
-                    <div class="group-item"><a href="img/cloud_lowres_step-step_interp.jpg"><img src="img/cloud_lowres_step-step_interps.png" title="Good." alt="cloud_lowres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
-                    <div class="group-item"><a href="img/cloud_lowres_voxel-voxel_interp.jpg"><img src="img/cloud_lowres_voxel-voxel_interps.png" title="Bad." alt="cloud_lowres_voxel-voxel_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_lowres_step-step_interp.jpg" data-lightbox="cloud_lowres" data-title="Good."><img src="img/cloud_lowres_step-step_interps.png" title="Good." alt="cloud_lowres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_lowres_voxel-voxel_interp.jpg" data-lightbox="cloud_lowres" data-title="Bad."><img src="img/cloud_lowres_voxel-voxel_interps.png" title="Bad." alt="cloud_lowres_voxel-voxel_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
                 </div>
             </div>
             <div class="clear"></div>
@@ -179,23 +174,23 @@
 
             <div class="group">
                 <div class="group-row">
-                    <div class="group-item"><a href="img/cloud_highres_step-step_interp.jpg"><img src="img/cloud_highres_step-step_interps.png" title="Normal-looking cloud." alt="cloud_highres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
-                    <div class="group-item"><a href="img/cloud_highres_step-voxel_get.jpg"><img src="img/cloud_highres_step-voxel_gets.png" title="Abstract and cartoony." alt="cloud_highres_step-voxel_get" /></a><div class="sub">Voxel ray marching without trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_step-step_interp.jpg" data-lightbox="cloud" data-title="Normal-looking cloud."><img src="img/cloud_highres_step-step_interps.png" title="Normal-looking cloud." alt="cloud_highres_step-step_interp" /></a><div class="sub">Regular ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_step-voxel_get.jpg" data-lightbox="cloud" data-title="Abstract and cartoony."><img src="img/cloud_highres_step-voxel_gets.png" title="Abstract and cartoony." alt="cloud_highres_step-voxel_get" /></a><div class="sub">Voxel ray marching without trilinear interpolation.</div></div>
                 </div>
                 <div class="group-row">
-                    <div class="group-item"><a href="img/cloud_highres_voxel-step_interp.jpg"><img src="img/cloud_highres_voxel-step_interps.png" title="Rain cloud?" alt="cloud_highres_voxel-step_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
-                    <div class="group-item"><a href="img/cloud_highres_voxel-voxel_get.jpg"><img src="img/cloud_highres_voxel-voxel_gets.png" title="Too dark..." alt="cloud_highres_voxel-voxel_get" /></a><div class="sub">Voxel ray marching for transmittance computation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_voxel-step_interp.jpg" data-lightbox="cloud" data-title="Rain cloud?"><img src="img/cloud_highres_voxel-step_interps.png" title="Rain cloud?" alt="cloud_highres_voxel-step_interp" /></a><div class="sub">Voxel ray marching with trilinear interpolation.</div></div>
+                    <div class="group-item"><a href="img/cloud_highres_voxel-voxel_get.jpg" data-lightbox="cloud" data-title="Too dark..."><img src="img/cloud_highres_voxel-voxel_gets.png" title="Too dark..." alt="cloud_highres_voxel-voxel_get" /></a><div class="sub">Voxel ray marching for transmittance computation.</div></div>
                 </div>
                 <div class="group-row">
-                    <div class="group-item"><a href="img/cloud_random1.jpg"><img src="img/cloud_random1s.png" title="Randomly generated cloud." alt="cloud_random1" /></a></div>
-                    <div class="group-item"><a href="img/cloud_random2.jpg"><img src="img/cloud_random2s.png" title="Randomly generated cloud with color." alt="cloud_random2" /></a></div>
+                    <div class="group-item"><a href="img/cloud_random1.jpg" data-lightbox="cloud" data-title="Randomly generated cloud."><img src="img/cloud_random1s.png" title="Randomly generated cloud." alt="cloud_random1" /></a></div>
+                    <div class="group-item"><a href="img/cloud_random2.jpg" data-lightbox="cloud" data-title="Randomly generated cloud with color."><img src="img/cloud_random2s.png" title="Randomly generated cloud with color." alt="cloud_random2" /></a></div>
                 </div>
                 <div class="group-row">
-                    <div class="group-item"><a href="img/cloud_result1.jpg"><img src="img/cloud_result1s.png" title="Finaly result." alt="cloud_result1" /></a></div>
-                    <div class="group-item"><a href="img/cloud_result2.jpg"><img src="img/cloud_result2s.png" title="Better final result." alt="cloud_result2" /></a></div>
+                    <div class="group-item"><a href="img/cloud_result1.jpg" data-lightbox="cloud" data-title="Finaly result."><img src="img/cloud_result1s.png" title="Finaly result." alt="cloud_result1" /></a></div>
+                    <div class="group-item"><a href="img/cloud_result2.jpg" data-lightbox="cloud" data-title="Better final result."><img src="img/cloud_result2s.png" title="Better final result." alt="cloud_result2" /></a></div>
                 </div>
             </div>
-
+            
             <h3>Download</h3>
 
             <div class="center">[ <strong><a href="volumetricloud.zip">Volumetric Clouds v.1.0</a></strong> ]</div>
